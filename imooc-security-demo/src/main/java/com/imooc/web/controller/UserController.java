@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.web.dto.User;
 import com.imooc.web.dto.UserQueryCondition;
 import com.imooc.web.exception.UserNotExistException;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import java.util.List;
 public class UserController {
 
     @PostMapping
+    @ApiOperation(value = "创建用户")
     public User create(@Valid @RequestBody User user, BindingResult errors){
         if(errors.hasErrors()){
             errors.getAllErrors().stream().forEach(
@@ -74,7 +77,7 @@ public class UserController {
 
     @GetMapping("/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
-    public User getInfo(@PathVariable String id){
+    public User getInfo(@ApiParam(value = "用户id") @PathVariable String id){
 //        throw new UserNotExistException(id);
         System.out.println("进入getInfo服务");
         User user = new User();

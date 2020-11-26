@@ -2,6 +2,8 @@ package com.imooc.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.web.validator.MyConstraint;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Past;
@@ -25,6 +27,7 @@ public class User {
 
     private String id;
 
+    @ApiModelProperty(value = "生日")
     @Past(message = "生日必须是过去的时间")
     private Date birthday;
 

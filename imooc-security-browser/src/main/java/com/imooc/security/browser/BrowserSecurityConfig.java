@@ -14,16 +14,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.formLogin()
-        http.httpBasic()
+////        http.formLogin()
+//        http.httpBasic()
+//                .and()
+//                .authorizeRequests()
+//                .anyRequest()
+//                .authenticated();
+
+        http.formLogin()
+                //跳转不到这个页面的？？？？？？？
+                .loginPage("/resources/imooc-signIn.html")
+                .loginProcessingUrl("/authentication/form")
                 .and()
                 .authorizeRequests()
+                .antMatchers("/resources/imooc-signIn.html").permitAll()
                 .anyRequest()
                 .authenticated();
     }

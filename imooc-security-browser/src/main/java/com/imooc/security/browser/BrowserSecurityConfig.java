@@ -4,10 +4,13 @@ import com.imooc.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * SpringSecurity配置
@@ -17,6 +20,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
+
+    @Autowired
+    private AuthenticationSuccessHandler imoocAuthenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler imoocAuthenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,6 +50,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/authentication/require")
 //                .loginPage("/imooc-signIn.html")
                 .loginProcessingUrl("/authentication/form")
+                .successHandler(imoocAuthenticationSuccessHandler)
+                .failureHandler(imoocAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll()
@@ -49,4 +60,20 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
     }
+
+    //配置内存用户
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        PasswordEncoder encoder = new BCryptPasswordEncoder();
+//
+//        auth.inMemoryAuthentication()
+//                .passwordEncoder(encoder)
+//                .withUser("jojo")
+//                .password(encoder.encode("123456"))
+//                .roles("ROOT", "USER")
+//                .and()
+//                .withUser("user")
+//                .password(encoder.encode("123456"))
+//                .roles("USER");
+//    }
 }

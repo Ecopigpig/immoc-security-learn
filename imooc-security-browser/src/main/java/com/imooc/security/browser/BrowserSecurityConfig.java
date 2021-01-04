@@ -1,5 +1,7 @@
 package com.imooc.security.browser;
 
+import com.imooc.security.core.properties.SecurityProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,11 +15,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * http://localhost:8070/index.html就是security的登录页地址
+     * 只是当前我们做了自定义的登录页
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 ////        http.formLogin()
@@ -29,12 +38,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 //跳转不到这个页面的？？？？？？？
-                .loginPage("/resources/imooc-signIn.html")
+                .loginPage("/authentication/require")
+//                .loginPage("/imooc-signIn.html")
                 .loginProcessingUrl("/authentication/form")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/resources/imooc-signIn.html").permitAll()
+                .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .csrf().disable();
     }
 }

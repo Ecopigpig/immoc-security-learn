@@ -1,6 +1,7 @@
 package com.imooc.security.browser;
 
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * SpringSecurity配置
@@ -45,7 +47,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .anyRequest()
 //                .authenticated();
 
-        http.formLogin()
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
                 //跳转不到这个页面的？？？？？？？
                 .loginPage("/authentication/require")
 //                .loginPage("/imooc-signIn.html")
@@ -54,7 +60,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(imoocAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll()
+                .antMatchers("/authentication/require",
+                        securityProperties.getBrowser().getLoginPage(),
+                        "/code/image").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

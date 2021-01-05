@@ -3,6 +3,7 @@ package com.imooc.security.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imooc.security.core.properties.LoginType;
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.support.SimpleResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,9 @@ public class ImoocAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
         if(LoginType.JSON.equals(securityProperties.getBrowser().getLoginType())){
             httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             httpServletResponse.setContentType("application/json;charset=UTF-8");
-            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(e));
+//            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(e));
+            //只返回错误的消息
+            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(e.getMessage())));
         }else{
             //不返回JSON就调用父类的方法，跳转到指定的页面
             super.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);

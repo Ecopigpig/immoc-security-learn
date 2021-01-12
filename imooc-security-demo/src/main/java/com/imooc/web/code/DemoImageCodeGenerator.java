@@ -16,7 +16,7 @@ import java.io.IOException;
  * @author: linxinting
  * @create: 2021-01-06 09:48
  **/
-@Component("imageCodeGenerator")
+//@Component("imageCodeGenerator")
 public class DemoImageCodeGenerator implements ValidateCodeGenerator {
     @Override
     public ImageCode createImageCode(HttpServletRequest request) throws IOException {

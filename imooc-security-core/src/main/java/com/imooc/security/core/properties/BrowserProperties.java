@@ -12,6 +12,16 @@ public class BrowserProperties {
 
     private LoginType loginType = LoginType.JSON;
 
+    private int rememberMeSecond = 3600;
+
+    public int getRememberMeSecond() {
+        return rememberMeSecond;
+    }
+
+    public void setRememberMeSecond(int rememberMeSecond) {
+        this.rememberMeSecond = rememberMeSecond;
+    }
+
     public LoginType getLoginType() {
         return loginType;
     }
